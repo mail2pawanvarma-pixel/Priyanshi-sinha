@@ -57,7 +57,6 @@
             border: 2px solid var(--primary-color);
             border-radius: 50%;
             position: relative;
-            /* CRITICAL FIX: Keeps image inside the circle */
             overflow: hidden; 
             background: white;
             display: flex;
@@ -186,20 +185,67 @@
         .member-details h4 { font-size: 1rem; margin-bottom: 2px; }
         .member-details p { font-size: 0.9rem; color: var(--text-light); }
 
-        /* --- GALLERY --- */
+        /* --- GALLERY FIXES --- */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 15px;
         }
 
         .gallery-img {
             width: 100%;
-            height: 200px;
+            height: 250px; /* Made taller */
             object-fit: cover;
+            /* CRITICAL FIX: This focuses on the face/top of image */
+            object-position: top center; 
             border-radius: 10px;
-            cursor: pointer;
+            cursor: zoom-in; /* Shows magnifying glass cursor */
             transition: transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .gallery-img:hover { transform: scale(1.02); }
+
+        .click-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* --- FULL SCREEN MODAL --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; 
+            z-index: 2000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.95); 
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 80%;
+            object-fit: contain;
+            border-radius: 5px;
+            border: 2px solid white;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
         }
 
         /* --- BOTTOM NAV --- */
@@ -252,7 +298,6 @@
     <!-- HERO SECTION -->
     <header class="hero">
         <div class="profile-frame">
-            <!-- Profile Photo Inserted Here -->
             <img src="https://i.ibb.co/WNgVzrkH/Gemini-Generated-Image-9pqaxu9pqaxu9pqa.png" alt="Priyanshi Sinha" class="profile-img">
         </div>
         
@@ -413,17 +458,18 @@
             </div>
         </section>
 
-        <!-- PHOTO GALLERY -->
+        <!-- PHOTO GALLERY (UPDATED) -->
         <section class="section fade-in">
             <div class="section-title">
                 <i class="fas fa-images"></i>
                 <h2>Photo Gallery</h2>
             </div>
             <div class="gallery-grid">
-                <!-- Gallery Photos Inserted Here -->
-                <img src="https://i.ibb.co/ZpGPL195/Gemini-Generated-Image-bsxooabsxooabsxo.png" alt="Photo 1" class="gallery-img">
-                <img src="https://i.ibb.co/Y7mrmxSD/Gemini-Generated-Image-12xh5p12xh5p12xh.png" alt="Photo 2" class="gallery-img">
+                <!-- Added onclick event to open modal -->
+                <img src="https://i.ibb.co/ZpGPL195/Gemini-Generated-Image-bsxooabsxooabsxo.png" alt="Photo 1" class="gallery-img" onclick="openModal(this)">
+                <img src="https://i.ibb.co/Y7mrmxSD/Gemini-Generated-Image-12xh5p12xh5p12xh.png" alt="Photo 2" class="gallery-img" onclick="openModal(this)">
             </div>
+            <p class="click-hint"><i class="fas fa-hand-pointer"></i> Tap on photo to view full size</p>
         </section>
 
         <!-- ADDRESS -->
@@ -437,6 +483,12 @@
             </div>
         </section>
 
+    </div>
+
+    <!-- FULL SCREEN IMAGE MODAL -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="img01">
     </div>
 
     <!-- BOTTOM NAV -->
@@ -460,6 +512,7 @@
     </nav>
 
     <script>
+        // Fade in animation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -471,6 +524,18 @@
         document.querySelectorAll('.fade-in').forEach(section => {
             observer.observe(section);
         });
+
+        // IMAGE MODAL LOGIC
+        function openModal(element) {
+            var modal = document.getElementById("imageModal");
+            var modalImg = document.getElementById("img01");
+            modal.style.display = "flex";
+            modalImg.src = element.src;
+        }
+
+        function closeModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
     </script>
 </body>
 </html>
